@@ -1,13 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import CinematicScrollHero from './components/CinematicScrollHero';
+import { useEffect, useRef, useState } from 'react';
 import VisionSection from './components/VisionSection';
 import MyHomeSections from './components/MyHomeSections';
 import ArchitectSection from './components/ArchitectSection';
 import WhyOpenerSection from './components/WhyOpenerSection';
 import ChapterOneSection from './components/ChapterOneSection';
 import ChapterTwoSection from './components/ChapterTwoSection';
-import ChapterThreeSection from './components/ChapterThreeSection';
-import ChapterFourSection from './components/ChapterFourSection';
 import ChapterFiveSection from './components/ChapterFiveSection';
 import PrivateResidencesSection from './components/PrivateResidencesSection';
 import FooterSection from './components/FooterSection';
@@ -24,17 +21,6 @@ export default function App() {
 
   const totalSlides = 3;
 
-  // Slide transition logic
-  const goToSlide = useCallback((index: number) => {
-    setCurrentSlide(index);
-    if (timerRef.current) {
-      window.clearInterval(timerRef.current);
-    }
-    timerRef.current = window.setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, 6000);
-  }, [totalSlides]);
-
   useEffect(() => {
     timerRef.current = window.setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -47,25 +33,16 @@ export default function App() {
     };
   }, [totalSlides]);
 
-  // Scroll listener: show navbar only once user has completely scrolled past the hero section
+  // Scroll listener: toggle scrolled style on navbar as user scrolls
   useEffect(() => {
     const handleScroll = () => {
-      const heroSection = document.getElementById('hero-section') || document.getElementById('cinematic-hero');
-      if (heroSection) {
-        const heroBottom = heroSection.getBoundingClientRect().bottom;
-        // Becomes visible only when the bottom of the hero section reaches or passes the top of the viewport
-        setIsScrolled(heroBottom <= 80);
-      } else {
-        setIsScrolled(window.scrollY > window.innerHeight);
-      }
+      setIsScrolled(window.scrollY > 40);
     };
 
-    handleScroll(); // Initial check on load (navbar will be hidden)
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
     };
   }, []);
 
@@ -196,11 +173,8 @@ export default function App() {
           <span></span>
         </div>
       </nav>
-
-      {/* Section 1: Cinematic Scroll-Driven Video Hero */}
-      <CinematicScrollHero />
-
-      {/* Section 2: The Skye Feature Slides Hero Section */}
+ 
+      {/* The Skye Hero Section */}
       <section id="hero" aria-label="The Skye Hero Presentation">
         <div className="hero-slider" id="heroSwiper">
           <div className="swiper-wrapper">
@@ -321,21 +295,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
-        {/* Hero Slider Pagination Indicators */}
-        <div className="hero-indicators" id="hero-indicators">
-          {[0, 1, 2].map((index) => (
-            <button
-              key={index}
-              type="button"
-              id={`hero-dot-${index}`}
-              className={`hero-dot ${currentSlide === index ? 'active' : ''}`}
-              data-slide={index}
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
       </section>
 
       {/* Section 2 — The Vision / About */}
@@ -347,7 +306,7 @@ export default function App() {
       {/* Section 6 — The Mind Behind The Skye */}
       <ArchitectSection />
 
-      {/* Section 7 — Why The Skye: Five Chapters Opener */}
+      {/* Section 7 — Why The Skye: Three Chapters Opener */}
       <WhyOpenerSection />
 
       {/* Chapter 01 — The Last Hilltop Of Its Kind */}
@@ -356,13 +315,7 @@ export default function App() {
       {/* Chapter 02 — Minutes Away. Worlds Apart. */}
       <ChapterTwoSection />
 
-      {/* Chapter 03 — 62 Homes. One Hill. No Compromises. */}
-      <ChapterThreeSection />
-
-      {/* Chapter 04 — Above the City. Beyond the Clock. */}
-      <ChapterFourSection />
-
-      {/* Chapter 05 — The Company You Keep. */}
+      {/* Chapter 03 — The Company You Keep. */}
       <ChapterFiveSection />
 
       {/* The Residences — Private Residences for Visionaries */}

@@ -42,7 +42,7 @@ export default function FooterSection() {
           <li><a href="#about">Private Residences</a></li>
           <li><a href="#why-opener">Location &amp; Accessibility</a></li>
           <li><a href="#exhale">Photo Gallery</a></li>
-          <li><a href="#chapter-4">Video Gallery</a></li>
+          <li><a href="#chapter-two">Video Gallery</a></li>
           <li><a href="#chapter-5">News &amp; Events</a></li>
           <li><a href="#footer">Contact Us</a></li>
         </ul>

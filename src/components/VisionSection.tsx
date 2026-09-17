@@ -14,20 +14,46 @@ export default function VisionSection() {
   const [isFounderPlaying, setIsFounderPlaying] = useState(false);
   const [isFounderMuted, setIsFounderMuted] = useState(false);
   const [founderProgress, setFounderProgress] = useState(0);
-  const [showCover, setShowCover] = useState(true);
+  const [showCover, setShowCover] = useState(false);
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const START_TIME = 13; // 0:13 seconds
   const END_TIME = 68;   // 1:08 = 68 seconds
   const CLIP_DURATION = END_TIME - START_TIME; // 55 seconds total duration
 
+  // Pre-unlock audio on user's first navigation gesture (scroll, touch, click)
+  useEffect(() => {
+    const unlockAudio = () => {
+      [founderVideoRef.current, video1Ref.current, video2Ref.current].forEach((v) => {
+        if (v) {
+          v.defaultMuted = false;
+          v.muted = false;
+          v.volume = 1.0;
+          v.removeAttribute('muted');
+        }
+      });
+      setIsFounderMuted(false);
+    };
+
+    const events = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click'];
+    events.forEach((evt) => window.addEventListener(evt, unlockAudio, { passive: true, capture: true }));
+
+    return () => {
+      events.forEach((evt) => window.removeEventListener(evt, unlockAudio, { capture: true }));
+    };
+  }, []);
+
   // Video timekeeper enforcing [0:13 - 1:08] window
   useEffect(() => {
     const v = founderVideoRef.current;
     if (!v) return;
 
-    // Configure inline video properties for iOS / Android WebKit
-    configureInlineVideo(v, { muted: true });
+    // Configure inline video properties for unmuted audio
+    configureInlineVideo(v, { muted: false });
+    v.defaultMuted = false;
+    v.muted = false;
+    v.volume = 1.0;
+    v.removeAttribute('muted');
 
     // Set initial start point safely
     const initTime = () => {
@@ -78,56 +104,71 @@ export default function VisionSection() {
     };
   }, []);
 
-  // Auto play/pause when user scrolls into/past the section with 0.8s cover photo display
+  // Auto play unmuted video always when user reaches this section
   useEffect(() => {
     const v = founderVideoRef.current;
     if (!v) return;
+
+    const playWithSound = () => {
+      setShowCover(false);
+      try {
+        if (v.currentTime < START_TIME || v.currentTime >= END_TIME) {
+          v.currentTime = START_TIME;
+        }
+      } catch {
+        // ignore seek error
+      }
+
+      v.defaultMuted = false;
+      v.muted = false;
+      v.volume = 1.0;
+      v.removeAttribute('muted');
+      setIsFounderMuted(false);
+
+      const p = v.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // If browser policy temporarily blocks unmuted autoplay prior to interaction:
+          v.muted = true;
+          v.play().then(() => {
+            const enableSound = () => {
+              v.defaultMuted = false;
+              v.muted = false;
+              v.volume = 1.0;
+              v.removeAttribute('muted');
+              setIsFounderMuted(false);
+              ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
+                window.removeEventListener(evt, enableSound);
+              });
+            };
+            ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
+              window.addEventListener(evt, enableSound, { once: true, passive: true });
+            });
+          }).catch(() => {});
+        });
+      }
+    };
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // User scrolled into view: show cover photo first
-            setShowCover(true);
-
-            if (playTimeoutRef.current) {
-              clearTimeout(playTimeoutRef.current);
-            }
-
-            // Brief 0.8s cover photo display, then start inline playback seamlessly
-            playTimeoutRef.current = setTimeout(() => {
-              setShowCover(false);
-              try {
-                if (v.currentTime < START_TIME || v.currentTime >= END_TIME) {
-                  v.currentTime = START_TIME;
-                }
-              } catch {
-                // ignore seek error
-              }
-
-              // On mobile scroll, autoplay MUST start muted to satisfy iOS Safari WebKit policies
-              v.muted = true;
-              v.defaultMuted = true;
-              setIsFounderMuted(true);
-              v.play().catch(() => {});
-            }, 800);
+            playWithSound();
           } else {
-            // Scrolled out of view: cancel timer and pause
-            if (playTimeoutRef.current) {
-              clearTimeout(playTimeoutRef.current);
-              playTimeoutRef.current = null;
-            }
             if (!v.paused) {
               v.pause();
             }
-            setShowCover(true);
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
 
     observer.observe(v);
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
     return () => {
       observer.disconnect();
       if (playTimeoutRef.current) {
@@ -139,10 +180,6 @@ export default function VisionSection() {
   const handleToggleFounderPlay = () => {
     const v = founderVideoRef.current;
     if (!v) return;
-    if (playTimeoutRef.current) {
-      clearTimeout(playTimeoutRef.current);
-      playTimeoutRef.current = null;
-    }
     if (v.paused) {
       setShowCover(false);
       try {
@@ -152,15 +189,12 @@ export default function VisionSection() {
       } catch {
         // ignore seek error
       }
-      // Direct user tap: attempt playback with unmuted sound
+      v.defaultMuted = false;
       v.muted = false;
+      v.volume = 1.0;
+      v.removeAttribute('muted');
       setIsFounderMuted(false);
-      v.play().catch(() => {
-        // Fallback to muted if device audio is restricted
-        v.muted = true;
-        setIsFounderMuted(true);
-        v.play().catch(() => {});
-      });
+      v.play().catch(() => {});
     } else {
       v.pause();
     }
@@ -413,16 +447,24 @@ export default function VisionSection() {
     };
   }, []);
 
-  // Mobile video observer and control
+  // Mobile video observer and control — starts with volume on & plays automatically
   useEffect(() => {
     const v1 = video1Ref.current;
     const v2 = video2Ref.current;
 
     if (v1) {
-      configureInlineVideo(v1, { muted: true, loop: true });
+      configureInlineVideo(v1, { muted: false, loop: true });
+      v1.defaultMuted = false;
+      v1.muted = false;
+      v1.volume = 1.0;
+      v1.removeAttribute('muted');
     }
     if (v2) {
-      configureInlineVideo(v2, { muted: true, loop: true });
+      configureInlineVideo(v2, { muted: false, loop: true });
+      v2.defaultMuted = false;
+      v2.muted = false;
+      v2.volume = 1.0;
+      v2.removeAttribute('muted');
     }
 
     const onPlay = () => setIsPlaying1(true);
@@ -433,15 +475,39 @@ export default function VisionSection() {
       v1.addEventListener('pause', onPause);
     }
 
+    const playWithSound = (v: HTMLVideoElement) => {
+      v.defaultMuted = false;
+      v.muted = false;
+      v.volume = 1.0;
+      v.removeAttribute('muted');
+      const p = v.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          v.muted = true;
+          v.play().then(() => {
+            const enableSound = () => {
+              v.defaultMuted = false;
+              v.muted = false;
+              v.volume = 1.0;
+              v.removeAttribute('muted');
+              ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
+                window.removeEventListener(evt, enableSound);
+              });
+            };
+            ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
+              window.addEventListener(evt, enableSound, { once: true, passive: true });
+            });
+          }).catch(() => {});
+        });
+      }
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const v = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            // Autoplay MUST be muted on mobile to succeed across iOS Safari & Android
-            v.muted = true;
-            v.defaultMuted = true;
-            v.play().catch(() => {});
+            playWithSound(v);
           } else {
             v.pause();
           }
@@ -466,12 +532,11 @@ export default function VisionSection() {
     const v1 = video1Ref.current;
     if (!v1) return;
     if (v1.paused) {
-      // Direct user tap: attempt unmuted audio
+      v1.defaultMuted = false;
       v1.muted = false;
-      v1.play().catch(() => {
-        v1.muted = true;
-        v1.play().catch(() => {});
-      });
+      v1.volume = 1.0;
+      v1.removeAttribute('muted');
+      v1.play().catch(() => {});
     } else {
       v1.pause();
     }
@@ -811,7 +876,6 @@ export default function VisionSection() {
                     ref={video1Ref}
                     className="ame-video"
                     playsInline
-                    muted
                     loop
                     autoPlay
                     preload="auto"
@@ -872,7 +936,6 @@ export default function VisionSection() {
                     ref={video2Ref}
                     className="ame-video"
                     playsInline
-                    muted
                     loop
                     autoPlay
                     preload="auto"

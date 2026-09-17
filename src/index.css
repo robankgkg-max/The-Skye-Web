@@ -73,22 +73,21 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 18px 48px;
-  background: rgba(18, 44, 79, 0.92);
+  background: rgba(18, 44, 79, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  /* Hidden on load and during hero scroll */
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-100%);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-#nav.scrolled {
   opacity: 1;
   pointer-events: all;
   transform: translateY(0);
+  transition: background 0.35s ease, padding 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+#nav.scrolled {
+  background: rgba(18, 44, 79, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  padding: 14px 48px;
 }
 
 .nav-logo {
@@ -206,458 +205,13 @@ a {
   border: none;
 }
 
-/* ─── Cinematic Scroll-Driven Hero Section (Section 1) ─── */
-.c-hero-runway {
-  position: relative;
-  width: 100%;
-  height: 288vh; /* Reduced by 10% from 320vh for optimal pacing across any screen */
-  background: #000000;
-  margin: 0;
-  padding: 0;
-  z-index: 10;
-}
-
-.c-hero-stage {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  width: 100%;
-  height: 90vh; /* Reduced by 10% across mobile, tablet, and desktop */
-  height: 90dvh;
-  overflow: hidden;
-  background: #000000;
-}
-
-.c-hero-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  background-color: #000000;
-  transform: translateZ(0);
-  will-change: transform;
-  transform-style: preserve-3d;
-}
-
-/* Cinematic Vignette / Film Scrim */
-.c-hero-scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0.5) 60%,
-    rgba(0, 0, 0, 0.85) 100%
-  ),
-  linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.45) 0%,
-    transparent 30%,
-    transparent 70%,
-    rgba(0, 0, 0, 0.75) 100%
-  );
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* Fluid Atmosphere / Water-Like Ambient Light Bloom */
-.c-hero-fluid-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at 50% 65%,
-    rgba(91, 136, 178, 0.08) 0%,
-    transparent 65%
-  );
-  mix-blend-mode: screen;
-  pointer-events: none;
-  z-index: 3;
-}
-
-/* ─── Ultra-Premium Editorial Old-Money Typography Overlay ─── */
-.c-hero-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  width: 100%;
-  max-width: 1200px;
-  height: 100%;
-  max-height: 90vh;
-  max-height: 90dvh;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  pointer-events: none;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  box-sizing: border-box;
-  padding: clamp(36px, 6vh, 64px) clamp(20px, 4vw, 60px) clamp(28px, 4.5vh, 48px);
-}
-
-.c-hero-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-/* ── Top Triptych Columns Header (PRIVATE RESIDENCES | CALICUT HILLTOP | EST. 2026) ── */
-.c-hero-top-triptych {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-@media (min-width: 769px) {
-  .c-hero-top-triptych {
-    max-width: 580px;
-  }
-}
-
-.c-hero-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  text-align: center;
-}
-
-.c-hero-col-label,
-.c-hero-col-val {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: clamp(8px, 0.95vw, 11px);
-  font-weight: 500;
-  letter-spacing: clamp(0.24em, 0.38vw, 0.42em);
-  text-transform: uppercase;
-  color: #FFFFFF;
-  line-height: 1.45;
-}
-
-.c-hero-col-divider {
-  width: 1px;
-  height: clamp(22px, 3vh, 32px);
-  background: rgba(255, 255, 255, 0.45);
-  margin: 0 clamp(8px, 1.8vw, 24px);
-  flex-shrink: 0;
-}
-
-/* ── Centerpiece Title Lockup (WHERE VISIONARIES / TOUCH THE Clouds / KASHMIR KUNNU) ── */
-.c-hero-centerpiece {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: auto 0;
-  width: 100%;
-  position: relative;
-}
-
-.c-hero-eyebrow-phrase {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: clamp(10.5px, 1.35vw, 14px);
-  font-weight: 500;
-  letter-spacing: clamp(0.32em, 0.48vw, 0.52em);
-  text-transform: uppercase;
-  color: #FFFFFF;
-  margin: 0 0 clamp(12px, 1.8vh, 22px) 0;
-  opacity: 0.92;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
-}
-
-.c-hero-title-group {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.c-hero-primary-text {
-  font-family: 'Cormorant Garamond', 'Cinzel', Georgia, serif;
-  font-size: clamp(2.9rem, 9.4vw, 6.8rem);
-  font-weight: 400;
-  letter-spacing: clamp(0.04em, 0.12vw, 0.14em);
-  text-transform: uppercase;
-  color: #FFFFFF;
-  margin: 0;
-  line-height: 0.95;
-  text-shadow: 0 4px 34px rgba(0, 0, 0, 0.9);
-  white-space: nowrap;
-}
-
-.c-hero-cursive-flourish {
-  font-family: 'Italianno', 'Playfair Display', cursive, serif;
-  font-size: clamp(5.3rem, 16vw, 11.5rem);
-  font-weight: 400;
-  color: #FFFFFF;
-  margin-top: -0.16em; /* Shifted down so it gracefully kisses and barely touches the bottom of TOUCH THE */
-  margin-bottom: -0.02em;
-  line-height: 0.85;
-  letter-spacing: 0.015em;
-  text-shadow: 0 6px 40px rgba(0, 0, 0, 0.95), 0 2px 16px rgba(0, 0, 0, 0.75);
-  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.8));
-  display: block;
-}
-
-.c-hero-location-anchor {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: clamp(10.2px, 1.25vw, 13px);
-  font-weight: 500;
-  letter-spacing: clamp(0.36em, 0.46vw, 0.54em);
-  text-transform: uppercase;
-  color: #FFFFFF;
-  margin: clamp(8px, 1.2vh, 14px) 0 0 0;
-  opacity: 0.9;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
-}
-
-/* ── Bottom Manifest (62 SANCTUARY VILLAS | 4 & 5 BHK / DIVIDER / CONCEIVED FOR THE UPPER CREST / SCROLL) ── */
-.c-hero-bottom-manifest {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-top: auto;
-}
-
-.c-hero-specs-duo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: clamp(12px, 1.8vh, 18px);
-}
-
-.c-hero-spec-item {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: clamp(8.5px, 1.05vw, 12px);
-  font-weight: 500;
-  letter-spacing: clamp(0.26em, 0.38vw, 0.44em);
-  text-transform: uppercase;
-  color: #FFFFFF;
-  white-space: nowrap;
-}
-
-.c-hero-spec-vbar {
-  display: inline-block;
-  width: 1px;
-  height: clamp(18px, 2.4vh, 26px);
-  background: rgba(255, 255, 255, 0.45);
-  margin: 0 clamp(12px, 2.2vw, 28px);
-  flex-shrink: 0;
-}
-
-.c-hero-bottom-rule {
-  width: clamp(36px, 5vw, 54px);
-  height: 1px;
-  background: rgba(255, 255, 255, 0.55);
-  margin-bottom: clamp(14px, 2vh, 20px);
-}
-
-.c-hero-crest-mantra {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: clamp(8px, 1vw, 11px);
-  font-weight: 500;
-  letter-spacing: clamp(0.32em, 0.44vw, 0.5em);
-  text-transform: uppercase;
-  color: #FFFFFF;
-  margin: 0 0 clamp(20px, 3vh, 32px) 0;
-  opacity: 0.92;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
-  text-align: center;
-}
-
-/* Discrete Scroll Cue with Centered Vertical Line */
-.c-hero-scroll-cue {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.c-hero-scroll-text {
-  font-family: 'Cinzel', 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: clamp(7.5px, 0.85vw, 9.5px);
-  font-weight: 500;
-  letter-spacing: clamp(0.32em, 0.42vw, 0.48em);
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.c-hero-scroll-line-wrap {
-  width: 1px;
-  height: clamp(30px, 4vh, 44px);
-  background: rgba(255, 255, 255, 0.22);
-  position: relative;
-  overflow: hidden;
-}
-
-.c-hero-scroll-pip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 45%;
-  background: #FFFFFF;
-  animation: heroPulseScroll 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-@keyframes heroPulseScroll {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  35% {
-    opacity: 1;
-  }
-  75% {
-    transform: translateY(220%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(220%);
-    opacity: 0;
-  }
-}
-
-/* ── Desktop & Tablet Dedicated Hero Stage Sizing with Smooth Scroll Runway ── */
-@media (min-width: 769px) {
-  #hero-section,
-  #cinematic-hero,
-  .c-hero-runway {
-    position: relative !important;
-    width: 100% !important;
-    height: 288vh !important;
-    min-height: 288vh !important;
-    max-height: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: #000 !important;
-    display: block !important;
-  }
-
-  .c-hero-stage {
-    position: sticky !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 90vh !important;
-    height: 90dvh !important;
-    max-height: 90vh !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: #000 !important;
-    z-index: 10 !important;
-  }
-
-  .c-hero-video {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    display: block !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: translateZ(0) !important;
-  }
-
-  .c-hero-scrim,
-  .c-hero-fluid-glow {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    pointer-events: none !important;
-  }
-
-  .c-hero-overlay {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    right: auto !important;
-    bottom: auto !important;
-    transform: translate3d(-50%, -50%, 0) !important;
-    width: 100% !important;
-    max-width: 1200px !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    padding: clamp(20px, 3vh, 36px) clamp(20px, 4vw, 48px) clamp(16px, 2.2vh, 26px) !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
-
-  .c-hero-content {
-    width: 100% !important;
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
-
-  .c-hero-eyebrow-phrase {
-    margin: 0 0 clamp(8px, 1.2vh, 14px) 0;
-  }
-
-  .c-hero-primary-text {
-    font-size: clamp(2.4rem, 6.2vw, 5.2rem);
-  }
-
-  .c-hero-cursive-flourish {
-    font-size: clamp(4.4rem, 11vw, 9rem);
-  }
-
-  .c-hero-location-anchor {
-    margin: clamp(6px, 1vh, 12px) 0 0 0;
-  }
-
-  .c-hero-specs-duo {
-    margin-bottom: clamp(8px, 1.2vh, 12px);
-  }
-
-  .c-hero-bottom-rule {
-    margin-bottom: clamp(8px, 1.2vh, 14px);
-  }
-
-  .c-hero-crest-mantra {
-    margin: 0 0 clamp(10px, 1.6vh, 20px) 0;
-  }
-
-  .c-hero-scroll-line-wrap {
-    height: clamp(22px, 2.6vh, 32px);
-  }
-}
-
+/* ─── The Skye Hero Presentation ─── */
 #hero {
   position: relative;
-  width: 100vw;
   width: 100%;
-  height: 90vh; /* Reduced by 10% across mobile, tablet, and desktop */
-  height: 90dvh;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 580px;
   overflow: hidden;
   background: #000000;
 }
@@ -842,32 +396,6 @@ a {
 
 .hc-s3 .hc-sub {
   font-size: calc(clamp(.58rem, 1.35vw, .78rem) + 1px);
-}
-
-.hero-indicators {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.hero-dot {
-  width: 32px;
-  height: 2px;
-  background: rgba(251,249,228,.3);
-  cursor: pointer;
-  transition: background .3s, width .3s;
-  border: none;
-  padding: 0;
-}
-
-.hero-dot.active {
-  background: #FBF9E4;
-  width: 56px;
 }
 
 .hero-slide-video {
@@ -2973,17 +2501,18 @@ a {
 }
 
 .ch1-video-frame {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 9;
   width: 100%;
-  max-width: 640px;
+  max-width: 1000px;
   margin-bottom: clamp(40px, 6vw, 72px);
+  border-radius: 4px;
 }
 
 .ch1-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: center center;
   display: block;
 }
 
@@ -3118,12 +2647,13 @@ a {
     padding: 0 80px;
   }
 
-  /* Chapter 1 portrait video frame on desktop */
+  /* Chapter 1 landscape video frame on desktop */
   .ch1-video-frame {
-    aspect-ratio: 4 / 5;
-    max-width: 680px;
+    aspect-ratio: 16 / 9;
+    max-width: 1200px;
     margin-bottom: 72px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
   }
 
   .ch1-manifesto {
@@ -3168,7 +2698,7 @@ a {
   }
 
   .ch1-video-frame {
-    max-width: 720px;
+    max-width: 1280px;
   }
 
   .ch1-image-frame {
@@ -3252,34 +2782,37 @@ a {
   background: #E8E5CE;
   overflow: hidden;
   box-shadow: 0 16px 44px rgba(18, 44, 79, 0.08);
+  border-radius: 6px;
 }
 
 .ch2-video-frame {
-  aspect-ratio: 9 / 13.85;
-  max-width: 580px;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
+  border: 1px solid rgba(18, 44, 79, 0.1);
 }
 
 .ch2-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: center center;
   display: block;
 }
 
 .ch2-num-badge {
   position: absolute;
   top: 18px;
-  right: 20px;
+  right: 22px;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 15px;
   letter-spacing: 0.2em;
   color: #FFFFFF;
-  opacity: 0.9;
+  opacity: 0.95;
   z-index: 5;
   pointer-events: none;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 
 /* Editorial and Prose */
@@ -3462,31 +2995,33 @@ a {
 
   .ch2-stage {
     display: grid;
-    grid-template-columns: 1.15fr 1fr;
+    grid-template-columns: 1.22fr 1fr;
     align-items: center;
-    gap: 72px;
+    gap: clamp(48px, 5vw, 76px);
     margin-bottom: 110px;
   }
 
   .ch2-video-frame {
-    aspect-ratio: 9 / 13.85;
+    aspect-ratio: 16 / 9;
     max-width: 100%;
     margin: 0;
-    border: 1px solid rgba(18, 44, 79, 0.12);
+    border: 1px solid rgba(18, 44, 79, 0.14);
+    border-radius: 6px;
+    box-shadow: 0 20px 50px rgba(18, 44, 79, 0.12);
   }
 
   .ch2-editorial {
-    padding-left: 20px;
-    gap: 44px;
+    padding-left: 12px;
+    gap: 36px;
   }
 
   .ch2-telemetry-grid {
-    gap: 32px;
-    padding-bottom: 32px;
+    gap: 28px;
+    padding-bottom: 28px;
   }
 
   .ch2-telemetry-time {
-    font-size: 64px;
+    font-size: clamp(48px, 4.5vw, 64px);
   }
 
   .ch2-telemetry-label {
@@ -3495,12 +3030,13 @@ a {
   }
 
   .ch2-lead {
-    font-size: clamp(26px, 2.1vw, 34px);
+    font-size: clamp(22px, 1.8vw, 30px);
+    line-height: 1.35;
   }
 
   .ch2-conclusion {
-    font-size: clamp(28px, 2.3vw, 38px);
-    line-height: 1.5;
+    font-size: clamp(20px, 1.5vw, 26px);
+    line-height: 1.55;
   }
 
   .ch2-map-wrapper {

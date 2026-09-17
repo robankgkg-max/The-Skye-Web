@@ -33,12 +33,12 @@ export default function ChapterFiveSection() {
     <section
       id="chapter-five"
       className="ch5-section"
-      aria-label="Chapter 05: The Company You Keep."
+      aria-label="Chapter 03: The Company You Keep."
     >
       <div className="ch5-container">
         {/* Top Meta Bar */}
         <div className="ch5-meta-bar">
-          <span className="ch5-meta-tag">CHAPTER 05 &mdash; THE COMMUNITY</span>
+          <span className="ch5-meta-tag">CHAPTER 03 &mdash; THE COMMUNITY</span>
           <span className="ch5-meta-coord">THE PRIVATE CLUBHOUSE &bull; INVITATION ENCLAVE</span>
         </div>
 

@@ -13,6 +13,12 @@ export function configureInlineVideo(video: HTMLVideoElement, options?: { muted?
   if (shouldBeMuted) {
     video.defaultMuted = true;
     video.muted = true;
+    video.setAttribute('muted', '');
+  } else {
+    video.defaultMuted = false;
+    video.muted = false;
+    video.volume = 1;
+    video.removeAttribute('muted');
   }
   
   if (options?.loop !== undefined) {

@@ -1,9 +1,9 @@
 export default function WhyOpenerSection() {
   return (
     <section
-      id="why-the-skye"
+      id="why-opener"
       className="why-opener-section"
-      aria-label="Why The Skye — Five Chapters"
+      aria-label="Why The Skye — Three Chapters"
     >
       <div className="why-opener-inner">
         <p className="why-opener-eyebrow">
@@ -11,7 +11,7 @@ export default function WhyOpenerSection() {
         </p>
 
         <h2 className="why-opener-heading">
-          Five Chapters<br />
+          Three Chapters<br />
           That Explain<br />
           Why This Hill<br />
           Changes<br />

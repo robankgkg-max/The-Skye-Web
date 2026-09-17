@@ -7,7 +7,7 @@ export default function ArchitectSection() {
   const barRef = useRef<HTMLDivElement>(null);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(true);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
   // Sync state with video element
@@ -18,34 +18,48 @@ export default function ArchitectSection() {
     setIsMuted(video.muted);
   }, []);
 
-  // Try to play with audio or fallback to muted
-  const tryPlay = useCallback(() => {
+  // Play with audio or fallback to muted with auto-unmute on gesture
+  const playWithSound = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    video.defaultMuted = false;
     video.muted = false;
-    video.play().then(() => {
-      syncState();
-    }).catch(() => {
-      video.muted = true;
-      video.play().then(() => {
+    video.volume = 1.0;
+    video.removeAttribute('muted');
+    setIsMuted(false);
+
+    const p = video.play();
+    if (p !== undefined) {
+      p.then(() => {
         syncState();
-      }).catch(() => {});
-
-      const unmute = () => {
-        if (videoRef.current) {
-          videoRef.current.muted = false;
+        setIsMuted(false);
+      }).catch(() => {
+        // If browser blocks unmuted playback prior to gesture, play muted then unmute on first gesture
+        video.muted = true;
+        video.play().then(() => {
           syncState();
-        }
-        ['pointerdown', 'keydown', 'touchstart'].forEach((type) => {
-          document.removeEventListener(type, unmute);
-        });
-      };
+          setIsMuted(true);
 
-      ['pointerdown', 'keydown', 'touchstart'].forEach((type) => {
-        document.addEventListener(type, unmute, { passive: true, once: true });
+          const enableSound = () => {
+            if (videoRef.current) {
+              videoRef.current.defaultMuted = false;
+              videoRef.current.muted = false;
+              videoRef.current.volume = 1.0;
+              videoRef.current.removeAttribute('muted');
+              setIsMuted(false);
+            }
+            ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown', 'keydown'].forEach((evt) => {
+              window.removeEventListener(evt, enableSound);
+            });
+          };
+
+          ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown', 'keydown'].forEach((evt) => {
+            window.addEventListener(evt, enableSound, { once: true, passive: true });
+          });
+        }).catch(() => {});
       });
-    });
+    }
   }, [syncState]);
 
   const MAX_DURATION = 55; // Stop video exactly at 0:55 seconds
@@ -93,24 +107,19 @@ export default function ArchitectSection() {
     };
   }, []);
 
-  // Auto-play when intersecting
+  // Auto-play unmuted video when intersecting
   useEffect(() => {
     const frame = frameRef.current;
     const video = videoRef.current;
     if (!frame || !video) return;
 
-    configureInlineVideo(video, { muted: true });
+    configureInlineVideo(video, { muted: false });
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Autoplay on mobile MUST begin muted to be permitted by iOS / WebKit
-            video.muted = true;
-            video.defaultMuted = true;
-            video.play().then(() => {
-              syncState();
-            }).catch(() => {});
+            playWithSound();
           } else {
             video.pause();
             syncState();
@@ -125,21 +134,14 @@ export default function ArchitectSection() {
     return () => {
       observer.disconnect();
     };
-  }, [syncState]);
+  }, [playWithSound, syncState]);
 
   // Toggle play/pause
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
-      // User tapped button: play with sound
-      video.muted = false;
-      video.play().then(() => {
-        syncState();
-      }).catch(() => {
-        video.muted = true;
-        video.play().then(() => syncState()).catch(() => {});
-      });
+      playWithSound();
     } else {
       video.pause();
       syncState();
@@ -150,8 +152,14 @@ export default function ArchitectSection() {
   const toggleMute = () => {
     const video = videoRef.current;
     if (!video) return;
-    video.muted = !video.muted;
-    setIsMuted(video.muted);
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    video.defaultMuted = nextMuted;
+    if (!nextMuted) {
+      video.volume = 1.0;
+      video.removeAttribute('muted');
+    }
+    setIsMuted(nextMuted);
   };
 
   // Scrub bar interaction
@@ -214,7 +222,6 @@ export default function ArchitectSection() {
               ref={videoRef}
               className="tmb-video"
               playsInline
-              muted
               preload="auto"
               poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1789369768/ARCHITECT_vejcey.jpg"
               src="https://res.cloudinary.com/pcodbmuo/video/upload/v1789369768/ARCHITECT_vejcey.mp4"

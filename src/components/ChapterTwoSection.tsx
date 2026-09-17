@@ -54,7 +54,7 @@ export default function ChapterTwoSection() {
 
         {/* Dynamic Editorial Content Stage */}
         <div className="ch2-stage">
-          {/* Primary Feature Video: Woman tours luxury residence */}
+          {/* Primary Feature Video: Chapter 2 Location */}
           <div className="ch2-media-frame ch2-video-frame">
             <span className="ch2-num-badge">02 &mdash;</span>
             <video
@@ -65,8 +65,8 @@ export default function ChapterTwoSection() {
               muted
               playsInline
               preload="auto"
-              poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1786001987/Woman_tours_luxury_residence_1080p_202608051751_v8ls8k.jpg"
-              src="https://res.cloudinary.com/pcodbmuo/video/upload/v1786001987/Woman_tours_luxury_residence_1080p_202608051751_v8ls8k.mp4"
+              poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1789624920/CHPTER_2_qvb3ac.jpg"
+              src="https://res.cloudinary.com/pcodbmuo/video/upload/v1789624920/CHPTER_2_qvb3ac.mp4"
             />
           </div>
 

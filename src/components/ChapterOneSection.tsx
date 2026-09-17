@@ -49,7 +49,7 @@ export default function ChapterOneSection() {
 
       {/* Main Media & Editorial Stage */}
       <div className="ch1-stage">
-        {/* Primary Video: Woman relaxing in luxury home */}
+        {/* Primary Video: Kashmir Kunnu Panorama */}
         <div className="ch1-media-frame ch1-video-frame">
           <span className="ch1-num-badge">01 &mdash;</span>
           <video
@@ -60,8 +60,8 @@ export default function ChapterOneSection() {
             muted
             playsInline
             preload="auto"
-            poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1786000303/Woman_relaxing_in_luxury_home_202608061241_w60faq.jpg"
-            src="https://res.cloudinary.com/pcodbmuo/video/upload/v1786000303/Woman_relaxing_in_luxury_home_202608061241_w60faq.mp4"
+            poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1789529093/chp1_beytfp.jpg"
+            src="https://res.cloudinary.com/pcodbmuo/video/upload/v1789529093/chp1_beytfp.mp4"
           />
         </div>
 
