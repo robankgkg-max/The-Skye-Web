@@ -8,30 +8,25 @@ gsap.registerPlugin(ScrollTrigger);
 export default function VisionSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const founderVideoRef = useRef<HTMLVideoElement>(null);
-  const video1Ref = useRef<HTMLVideoElement>(null);
-  const video2Ref = useRef<HTMLVideoElement>(null);
-  const [isPlaying1, setIsPlaying1] = useState(false);
   const [isFounderPlaying, setIsFounderPlaying] = useState(false);
   const [isFounderMuted, setIsFounderMuted] = useState(false);
   const [founderProgress, setFounderProgress] = useState(0);
-  const [showCover, setShowCover] = useState(false);
   const playTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const START_TIME = 13; // 0:13 seconds
+  const START_TIME = 2; // 2 seconds (0:02 mark, cleanly skipping initial intro flash)
   const END_TIME = 68;   // 1:08 = 68 seconds
-  const CLIP_DURATION = END_TIME - START_TIME; // 55 seconds total duration
+  const CLIP_DURATION = END_TIME - START_TIME; // 66 seconds total duration
 
   // Pre-unlock audio on user's first navigation gesture (scroll, touch, click)
   useEffect(() => {
     const unlockAudio = () => {
-      [founderVideoRef.current, video1Ref.current, video2Ref.current].forEach((v) => {
-        if (v) {
-          v.defaultMuted = false;
-          v.muted = false;
-          v.volume = 1.0;
-          v.removeAttribute('muted');
-        }
-      });
+      const v = founderVideoRef.current;
+      if (v) {
+        v.defaultMuted = false;
+        v.muted = false;
+        v.volume = 1.0;
+        v.removeAttribute('muted');
+      }
       setIsFounderMuted(false);
     };
 
@@ -70,6 +65,7 @@ export default function VisionSection() {
       initTime();
     } else {
       v.addEventListener('loadedmetadata', initTime, { once: true });
+      v.addEventListener('canplay', initTime, { once: true });
     }
 
     const handleTimeUpdate = () => {
@@ -110,7 +106,6 @@ export default function VisionSection() {
     if (!v) return;
 
     const playWithSound = () => {
-      setShowCover(false);
       try {
         if (v.currentTime < START_TIME || v.currentTime >= END_TIME) {
           v.currentTime = START_TIME;
@@ -127,22 +122,31 @@ export default function VisionSection() {
 
       const p = v.play();
       if (p !== undefined) {
-        p.catch(() => {
+        p.then(() => {
+          setIsFounderPlaying(true);
+          setIsFounderMuted(false);
+        }).catch(() => {
           // If browser policy temporarily blocks unmuted autoplay prior to interaction:
           v.muted = true;
           v.play().then(() => {
+            setIsFounderPlaying(true);
+            setIsFounderMuted(true);
+
             const enableSound = () => {
-              v.defaultMuted = false;
-              v.muted = false;
-              v.volume = 1.0;
-              v.removeAttribute('muted');
-              setIsFounderMuted(false);
-              ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
-                window.removeEventListener(evt, enableSound);
+              if (founderVideoRef.current) {
+                founderVideoRef.current.defaultMuted = false;
+                founderVideoRef.current.muted = false;
+                founderVideoRef.current.volume = 1.0;
+                founderVideoRef.current.removeAttribute('muted');
+                setIsFounderMuted(false);
+              }
+              ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown', 'keydown'].forEach((evt) => {
+                window.removeEventListener(evt, enableSound, { capture: true });
               });
             };
-            ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
-              window.addEventListener(evt, enableSound, { once: true, passive: true });
+
+            ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown', 'keydown'].forEach((evt) => {
+              window.addEventListener(evt, enableSound, { once: true, passive: true, capture: true });
             });
           }).catch(() => {});
         });
@@ -161,12 +165,18 @@ export default function VisionSection() {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: [0, 0.1, 0.2] }
     );
 
     observer.observe(v);
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
+    }
+
+    // Check if section is already in view upon mount
+    const rect = v.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      playWithSound();
     }
 
     return () => {
@@ -181,7 +191,6 @@ export default function VisionSection() {
     const v = founderVideoRef.current;
     if (!v) return;
     if (v.paused) {
-      setShowCover(false);
       try {
         if (v.currentTime < START_TIME || v.currentTime >= END_TIME) {
           v.currentTime = START_TIME;
@@ -194,7 +203,10 @@ export default function VisionSection() {
       v.volume = 1.0;
       v.removeAttribute('muted');
       setIsFounderMuted(false);
-      v.play().catch(() => {});
+      v.play().catch(() => {
+        v.muted = true;
+        v.play().catch(() => {});
+      });
     } else {
       v.pause();
     }
@@ -447,101 +459,6 @@ export default function VisionSection() {
     };
   }, []);
 
-  // Mobile video observer and control — starts with volume on & plays automatically
-  useEffect(() => {
-    const v1 = video1Ref.current;
-    const v2 = video2Ref.current;
-
-    if (v1) {
-      configureInlineVideo(v1, { muted: false, loop: true });
-      v1.defaultMuted = false;
-      v1.muted = false;
-      v1.volume = 1.0;
-      v1.removeAttribute('muted');
-    }
-    if (v2) {
-      configureInlineVideo(v2, { muted: false, loop: true });
-      v2.defaultMuted = false;
-      v2.muted = false;
-      v2.volume = 1.0;
-      v2.removeAttribute('muted');
-    }
-
-    const onPlay = () => setIsPlaying1(true);
-    const onPause = () => setIsPlaying1(false);
-
-    if (v1) {
-      v1.addEventListener('play', onPlay);
-      v1.addEventListener('pause', onPause);
-    }
-
-    const playWithSound = (v: HTMLVideoElement) => {
-      v.defaultMuted = false;
-      v.muted = false;
-      v.volume = 1.0;
-      v.removeAttribute('muted');
-      const p = v.play();
-      if (p !== undefined) {
-        p.catch(() => {
-          v.muted = true;
-          v.play().then(() => {
-            const enableSound = () => {
-              v.defaultMuted = false;
-              v.muted = false;
-              v.volume = 1.0;
-              v.removeAttribute('muted');
-              ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
-                window.removeEventListener(evt, enableSound);
-              });
-            };
-            ['click', 'touchstart', 'scroll', 'wheel', 'pointerdown'].forEach((evt) => {
-              window.addEventListener(evt, enableSound, { once: true, passive: true });
-            });
-          }).catch(() => {});
-        });
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const v = entry.target as HTMLVideoElement;
-          if (entry.isIntersecting) {
-            playWithSound(v);
-          } else {
-            v.pause();
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    if (v1) observer.observe(v1);
-    if (v2) observer.observe(v2);
-
-    return () => {
-      if (v1) {
-        v1.removeEventListener('play', onPlay);
-        v1.removeEventListener('pause', onPause);
-      }
-      observer.disconnect();
-    };
-  }, []);
-
-  const handleTogglePlay1 = () => {
-    const v1 = video1Ref.current;
-    if (!v1) return;
-    if (v1.paused) {
-      v1.defaultMuted = false;
-      v1.muted = false;
-      v1.volume = 1.0;
-      v1.removeAttribute('muted');
-      v1.play().catch(() => {});
-    } else {
-      v1.pause();
-    }
-  };
-
   return (
     <section
       id="about"
@@ -594,28 +511,11 @@ export default function VisionSection() {
               className="about-founder-video"
               playsInline
               preload="auto"
-              poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_13/v1789369917/IFLUE_xwh1wg.jpg"
+              poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_2/v1789369917/IFLUE_xwh1wg.jpg"
               src="https://res.cloudinary.com/pcodbmuo/video/upload/v1789369917/IFLUE_xwh1wg.mp4"
               muted={isFounderMuted}
-            />
-
-            {/* 2.5s Cover Photo Overlay */}
-            <div
-              className={`about-vid-cover ${!showCover ? 'is-hidden' : ''}`}
               onClick={handleToggleFounderPlay}
-              onTouchEnd={handleToggleFounderPlay}
-              role="button"
-              tabIndex={0}
-              aria-hidden="true"
-            >
-              <img
-                src="https://res.cloudinary.com/pcodbmuo/image/upload/v1785879457/founder_wz8mwy.webp"
-                alt="Iflu Rahman — The Skye"
-                className="about-vid-cover-img"
-                loading="eager"
-                referrerPolicy="no-referrer"
-              />
-            </div>
+            />
 
             {/* Glass Play/Pause Center Button */}
             <button
@@ -678,7 +578,36 @@ export default function VisionSection() {
 
         {/* RIGHT — ivory editorial magazine grid */}
         <div className="about-editorial">
-          {/* UPPER: founder portrait + first paragraph */}
+          {/* Intent Badge & Brand Crest Strip (from file contents) */}
+          <div className="about-intent-strip">
+            <div className="about-intent-badge">
+              <span className="intent-dot" aria-hidden="true" />
+              <span>India’s First Intent Based Residential Development</span>
+            </div>
+            <div className="about-intent-by">
+              <span className="by-text">by</span>
+              <img
+                src="https://res.cloudinary.com/pcodbmuo/image/upload/e_make_transparent:25/f_png/v1786068596/ChatGPT_Image_Aug_7_2026_07_39_16_AM_ihq1lg.png"
+                alt="Creator Group — Built With Intent"
+                className="creator-brand-crest"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
+
+          {/* Featured Visionary Pull-Quote (from file contents) */}
+          <blockquote className="about-pullquote">
+            <p className="pullquote-text">
+              &ldquo;Behind every visionary, there is a home that made it possible. A space that anchors their spirit, restores their energy, and gives their intent the room to grow wings.&rdquo;
+            </p>
+            <div className="pullquote-author">
+              <span className="pullquote-name">Iflu Rahman</span>
+              <span className="pullquote-role">&bull; Founder &amp; Chairman, Crietor Group</span>
+            </div>
+          </blockquote>
+
+          {/* UPPER: founder portrait + foundational prose */}
           <div className="about-upper">
             <div className="about-portrait" id="aboutPortrait">
               <img
@@ -710,15 +639,30 @@ export default function VisionSection() {
           {/* Editorial hairline divider */}
           <div className="about-divider" id="aboutDivider"></div>
 
-          {/* LOWER: founder text + signature LEFT / stacked B&W photos RIGHT */}
+          {/* Curated Full-Color Architectural Showcase */}
+          <div className="about-photos">
+            <div className="photo-wrap" id="photo1">
+              <img
+                src="https://res.cloudinary.com/pcodbmuo/image/upload/v1785878776/inter-2_fwrvaw.webp"
+                alt="The Skye — Expansive Living Sanctuary"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="photo-wrap" id="photo2">
+              <img
+                src="https://res.cloudinary.com/pcodbmuo/image/upload/v1785878781/pool_qji0sb.webp"
+                alt="The Skye — Horizon Pool at Kashmir Kunnu"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
+
+          {/* LOWER: founder text + signature */}
           <div className="about-lower">
             <div className="about-founder-col">
               <div className="about-p2" id="aboutP2">
-                <p>
-                  I've always believed that behind every visionary, there is a
-                  home. A space that anchors their spirit, restores their energy,
-                  and gives their intent the room to grow wings.
-                </p>
                 <p>
                   The Skye is that kind of space—elevated, expansive, and alive
                   with quiet strength. It is more than an address; it is a launchpad
@@ -836,112 +780,6 @@ export default function VisionSection() {
                     Founder &amp; Chairman<br />
                     Crietor Group
                   </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Stacked editorial B&W interior photos */}
-            <div className="about-photos">
-              <div className="photo-wrap" id="photo1">
-                <img
-                  src="https://res.cloudinary.com/pcodbmuo/image/upload/v1785878776/inter-2_fwrvaw.webp"
-                  alt="The Skye Interior — Living Space"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <div className="photo-wrap" id="photo2">
-                <img
-                  src="https://res.cloudinary.com/pcodbmuo/image/upload/v1785878775/int-0_uvfdtx.webp"
-                  alt="The Skye Interior — Architectural Detail"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </div>
-
-            {/* MOBILE-ONLY EDITORIAL MEDIA COMPOSITION */}
-            <div className="about-mobile-ed" aria-hidden="false">
-              <div className="ame-row ame-row-1">
-                <div
-                  className="ame-video-wrap ame-v1"
-                  onClick={handleTogglePlay1}
-                  onTouchEnd={handleTogglePlay1}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={isPlaying1 ? "Pause interview clip" : "Play interview clip"}
-                >
-                  <video
-                    id="ameVideo1"
-                    ref={video1Ref}
-                    className="ame-video"
-                    playsInline
-                    loop
-                    autoPlay
-                    preload="auto"
-                    poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1786013221/iflue_smzvzr.jpg"
-                    src="https://res.cloudinary.com/pcodbmuo/video/upload/v1786013221/iflue_smzvzr.mp4"
-                  />
-                  <button
-                    type="button"
-                    className={`ame-play ${isPlaying1 ? 'is-playing is-hidden' : ''}`}
-                    id="amePlay1"
-                    aria-label="Play video"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleTogglePlay1();
-                    }}
-                  />
-                </div>
-
-                <div className="ame-side">
-                  <span className="ame-rule" aria-hidden="true"></span>
-                  <div className="ame-side-text">
-                    <p className="ame-statement">
-                      India’s First<br />
-                      Intent Based<br />
-                      Residential<br />
-                      Development
-                    </p>
-                    <p className="ame-by">by</p>
-                    <img
-                      className="ame-logo"
-                      src="https://res.cloudinary.com/pcodbmuo/image/upload/e_make_transparent:25/f_png/v1786068596/ChatGPT_Image_Aug_7_2026_07_39_16_AM_ihq1lg.png"
-                      alt="Creator Group — Built With Intent"
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="ame-row ame-row-2">
-                <blockquote className="ame-quote">
-                  <p>
-                    Behind every<br />
-                    successful visionary,<br />
-                    there is a home that<br />
-                    made it possible.
-                  </p>
-                  <span className="ame-quote-rule" aria-hidden="true"></span>
-                  <div className="ame-quote-foot">
-                    <span className="ame-quote-name">Iflu Rahman.</span>
-                    <span className="ame-quote-role">CEO &amp; MD</span>
-                  </div>
-                </blockquote>
-
-                <div className="ame-video-wrap ame-v2">
-                  <video
-                    id="ameVideo2"
-                    ref={video2Ref}
-                    className="ame-video"
-                    playsInline
-                    loop
-                    autoPlay
-                    preload="auto"
-                    poster="https://res.cloudinary.com/pcodbmuo/video/upload/so_1/v1786021993/Woman_turns_at_sunset_1080p_202608061842_t3gta1.jpg"
-                    src="https://res.cloudinary.com/pcodbmuo/video/upload/v1786021993/Woman_turns_at_sunset_1080p_202608061842_t3gta1.mp4"
-                  />
                 </div>
               </div>
             </div>

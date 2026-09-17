@@ -672,19 +672,31 @@ a {
 /* PART 2 — SPLIT LAYOUT */
 .about-split {
   display: grid;
-  grid-template-columns: 0.75fr 1fr;
+  grid-template-columns: minmax(320px, 390px) 1fr;
   width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
   align-items: start;
+  gap: clamp(24px, 3.5vw, 52px);
+  padding: 0 clamp(20px, 3.5vw, 48px) clamp(48px, 6vh, 80px);
 }
 
 .about-img-col {
-  position: relative;
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  width: 100%;
+  max-width: 390px;
 }
 
 .about-img-sticky {
   position: relative;
-  height: auto;
+  width: 100%;
+  height: clamp(520px, 72vh, 660px);
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14), 0 2px 10px rgba(0, 0, 0, 0.06);
+  background: #000;
 }
 
 .gsap-ready .about-img-sticky {
@@ -696,10 +708,10 @@ a {
   position: relative;
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  object-position: top center;
-  filter: saturate(0.88) brightness(0.95);
+  object-position: center 20%;
+  filter: saturate(1.02) brightness(0.98);
   will-change: transform;
 }
 
@@ -708,6 +720,7 @@ a {
   height: 100%;
   min-height: 520px;
   object-fit: cover;
+  object-position: center 20%;
   display: block;
   background: #000;
 }
@@ -837,19 +850,119 @@ a {
   background: #F5F2EC;
   display: flex;
   flex-direction: column;
+  border-radius: 14px;
+  padding: clamp(36px, 5vw, 64px) clamp(28px, 4vw, 56px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.04);
 }
 
+/* Intent & Brand Crest Strip */
+.about-intent-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: clamp(18px, 2.2vh, 26px);
+  border-bottom: 1px solid rgba(15, 15, 15, 0.12);
+  margin-bottom: clamp(24px, 3vh, 36px);
+  flex-wrap: wrap;
+}
+
+.about-intent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  font-size: clamp(0.68rem, 0.78vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+}
+
+.intent-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #B38E5D;
+  display: inline-block;
+}
+
+.about-intent-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.about-intent-by .by-text {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 0.84rem;
+  color: rgba(15, 15, 15, 0.55);
+}
+
+.creator-brand-crest {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0.12);
+}
+
+/* Pull-quote Block */
+.about-pullquote {
+  position: relative;
+  margin: 0 0 clamp(28px, 3.5vh, 40px) 0;
+  padding: clamp(18px, 2.4vh, 26px) clamp(22px, 2.8vw, 32px);
+  background: rgba(255, 255, 255, 0.65);
+  border-left: 3px solid #B38E5D;
+  border-radius: 0 8px 8px 0;
+}
+
+.pullquote-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.18rem, 1.45vw, 1.42rem);
+  line-height: 1.5;
+  color: #0F0F0F;
+  margin: 0;
+}
+
+.pullquote-author {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pullquote-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #0F0F0F;
+}
+
+.pullquote-role {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  color: rgba(15, 15, 15, 0.6);
+}
+
+/* Upper Module: Founder Profile + Intro Prose */
 .about-upper {
   display: grid;
-  grid-template-columns: 0.78fr 1fr;
+  grid-template-columns: 0.68fr 1fr;
   align-items: start;
-  padding: clamp(52px, 7vh, 96px) clamp(36px, 4.5vw, 68px) 0;
-  gap: clamp(20px, 2.5vw, 36px);
+  padding: 0;
+  gap: clamp(20px, 2.8vw, 36px);
 }
 
 .about-portrait {
   position: relative;
   overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 }
 
 .gsap-ready .about-portrait {
@@ -858,12 +971,13 @@ a {
 
 .about-portrait img {
   width: 100%;
-  aspect-ratio: 2/3;
+  aspect-ratio: 3/4;
   object-fit: cover;
   object-position: top center;
-  filter: grayscale(100%) contrast(1.08) brightness(0.98);
-  transform: scale(1.06);
+  filter: saturate(1.02) contrast(1.02);
+  transform: scale(1.04);
   transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: block;
 }
 
 .about-portrait.revealed img {
@@ -872,7 +986,7 @@ a {
 
 .about-p1 {
   font-family: 'IM Fell English', Georgia, serif;
-  font-size: clamp(0.84rem, 1.02vw, 1.08rem);
+  font-size: clamp(0.86rem, 1.02vw, 1.08rem);
   line-height: 1.76;
   color: #0F0F0F;
   letter-spacing: 0.004em;
@@ -886,18 +1000,62 @@ a {
 
 .about-divider {
   height: 1px;
-  background: rgba(15,15,15,0.20);
-  margin: clamp(32px, 4vh, 56px) clamp(36px, 4.5vw, 68px);
+  background: rgba(15,15,15,0.18);
+  margin: clamp(28px, 3.5vh, 44px) 0;
   transform-origin: left;
   transform: scaleX(0);
 }
 
-.about-lower {
+/* Curated Full-Color Architectural Photos */
+.about-photos {
   display: grid;
-  grid-template-columns: 1fr 0.78fr;
-  align-items: start;
-  padding: 0 clamp(36px, 4.5vw, 68px) clamp(64px, 8vh, 112px);
-  gap: clamp(20px, 2.5vw, 36px);
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 1.8vw, 24px);
+  margin-bottom: clamp(28px, 3.5vh, 44px);
+}
+
+.about-photos .photo-wrap {
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
+}
+
+.gsap-ready .about-photos .photo-wrap {
+  clip-path: inset(0 0 100% 0);
+}
+
+.about-photos .photo-wrap img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  filter: saturate(1.02) contrast(1.02);
+  transform: scale(1.04);
+  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  display: block;
+}
+
+.about-photos .photo-wrap.revealed img {
+  transform: scale(1);
+}
+
+.about-photos .photo-wrap:hover img {
+  transform: scale(1.08);
+}
+
+.about-photos .photo-wrap:first-child img {
+  object-position: center center;
+}
+
+.about-photos .photo-wrap:last-child img {
+  object-position: center center;
+}
+
+/* Lower Module: Narrative + Signature */
+.about-lower {
+  display: block;
+  padding: 0;
 }
 
 .about-founder-col {
@@ -907,7 +1065,7 @@ a {
 
 .about-p2 {
   font-family: 'IM Fell English', Georgia, serif;
-  font-size: clamp(0.84rem, 1.02vw, 1.08rem);
+  font-size: clamp(0.86rem, 1.02vw, 1.08rem);
   line-height: 1.76;
   color: #0F0F0F;
   letter-spacing: 0.004em;
@@ -920,7 +1078,7 @@ a {
 }
 
 .founder-block {
-  margin-top: clamp(30px, 4vh, 50px);
+  margin-top: clamp(24px, 3vh, 40px);
   display: flex;
   align-items: flex-start;
   gap: 18px;
@@ -970,45 +1128,7 @@ a {
   display: block;
 }
 
-.about-photos {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.2vh, 16px);
-}
-
-.about-photos .photo-wrap {
-  overflow: hidden;
-  position: relative;
-}
-
-.gsap-ready .about-photos .photo-wrap {
-  clip-path: inset(0 0 100% 0);
-}
-
-.about-photos .photo-wrap img {
-  width: 100%;
-  object-fit: cover;
-  filter: grayscale(100%) contrast(1.06) brightness(0.97);
-  transform: scale(1.08);
-  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-}
-
-.about-photos .photo-wrap.revealed img {
-  transform: scale(1);
-}
-
-.about-photos .photo-wrap:first-child img {
-  aspect-ratio: 4/3;
-  object-position: center top;
-}
-
-.about-photos .photo-wrap:last-child img {
-  aspect-ratio: 4/3;
-  object-position: center;
-}
-
-@media (max-width: 860px) {
+@media (max-width: 960px) {
   .hed-main {
     font-size: clamp(4rem, 17vw, 7.5rem);
   }
@@ -1019,44 +1139,28 @@ a {
 
   .about-split {
     grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .about-img-col {
+    position: relative;
+    top: 0;
+    max-width: 440px;
+    margin: 0 auto;
   }
 
   .about-img-sticky {
-    position: relative;
-    height: clamp(320px, 76vw, 560px);
+    height: clamp(380px, 78vw, 560px);
+    max-width: 440px;
   }
 
   .about-upper {
-    grid-template-columns: 0.85fr 1.1fr;
-    padding: clamp(36px, 6vw, 56px) clamp(22px, 5vw, 36px) 0;
-    gap: clamp(14px, 3vw, 24px);
-  }
-
-  .about-portrait img {
-    aspect-ratio: 2/3;
-  }
-
-  .about-divider {
-    margin: clamp(24px, 4vw, 40px) clamp(22px, 5vw, 36px);
-  }
-
-  .about-lower {
-    grid-template-columns: 1fr;
-    padding: 0 clamp(22px, 5vw, 36px) clamp(48px, 8vw, 72px);
-    gap: clamp(28px, 5vw, 44px);
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 20px;
   }
 
   .about-photos {
-    flex-direction: row;
-    gap: clamp(8px, 2vw, 16px);
-  }
-  .about-photos .photo-wrap {
-    flex: 1;
-  }
-  .about-photos .photo-wrap:first-child img,
-  .about-photos .photo-wrap:last-child img {
-    aspect-ratio: 3/4;
-    object-position: top center;
+    grid-template-columns: 1fr 1fr;
   }
 
   .about-p1, .about-p2 {
@@ -1065,7 +1169,7 @@ a {
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 640px) {
   .hed-main {
     font-size: clamp(3.4rem, 19vw, 5.8rem);
   }
@@ -1075,8 +1179,13 @@ a {
   .about-upper {
     grid-template-columns: 1fr;
   }
-  .about-portrait {
-    display: none;
+  .about-photos {
+    grid-template-columns: 1fr;
+  }
+  .about-intent-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
 
