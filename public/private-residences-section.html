@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Residences — Private Residences for Visionaries</title>
+
+  <!-- Luxury Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── RESET & ROOT SCOPED DESIGN TOKENS ─── */
+    :root {
+      --pr-bg:           #0b0b0b;
+      --pr-cream:        #e6ddd0;
+      --pr-gold:         #c8a05a;
+      --pr-label-blue:   #6e90a8;
+      --pr-muted:        rgba(215, 204, 185, 0.34);
+      --pr-rule:         rgba(215, 204, 185, 0.22);
+      --pr-btn-cream-bg: #e2d7bc;
+      --pr-btn-cream-fg: #0c0c0c;
+      --pr-btn-dark-bd:  rgba(215, 204, 185, 0.33);
+      --pr-btn-dark-fg:  #e2d7bc;
+      --pr-serif:        'Cormorant Garamond', Georgia, serif;
+      --pr-sans:         'Jost', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--pr-bg);
+      color: var(--pr-cream);
+      font-family: var(--pr-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ─── PRIVATE RESIDENCES SECTION ─── */
+    .pr {
+      background: var(--pr-bg);
+      text-align: center;
+      padding: 96px 24px 88px;
+      width: 100%;
+      position: relative;
+    }
+
+    .pr__inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ① Eyebrow */
+    .pr__eyebrow {
+      display: block;
+      font-family: var(--pr-sans);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--pr-label-blue);
+      margin-bottom: 14px;
+    }
+
+    /* Horizontal Divider Rules */
+    .pr__rule {
+      width: 38px;
+      height: 1px;
+      background: var(--pr-rule);
+      margin: 0 auto;
+    }
+
+    .pr__rule--sm { margin-bottom: 44px; }
+    .pr__rule--md { margin-bottom: 50px; }
+
+    /* ② Main Heading */
+    .pr__heading {
+      font-family: var(--pr-serif);
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: 0.01em;
+      color: var(--pr-cream);
+      margin-bottom: 30px;
+    }
+
+    .pr__heading em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--pr-gold);
+    }
+
+    /* ③ Project Metadata & RERA */
+    .pr__meta {
+      font-family: var(--pr-sans);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--pr-muted);
+      margin-bottom: 7px;
+    }
+
+    .pr__rera {
+      font-family: var(--pr-sans);
+      font-size: 9.5px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--pr-muted);
+      margin-bottom: 52px;
+    }
+
+    /* ④ Interactive Video Player Container */
+    .pr__video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 3px;
+      margin-bottom: 52px;
+      cursor: pointer;
+      background: #000000;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+    }
+
+    /* YouTube IFrame Wrapper */
+    .pr__yt-wrap {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .pr__yt-iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border: none;
+    }
+
+    /* Poster / Sunset Glow Cover (Fades out when playback begins) */
+    .pr__video-bg {
+      position: absolute;
+      inset: 0;
+      background-color: #141610;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .pr__video-bg--hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .pr__video-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(
+          ellipse at 50% 44%,
+          rgba(210, 115, 28, 0.88) 0%,
+          rgba(165, 82, 18, 0.65) 13%,
+          rgba(95, 50, 10, 0.38) 27%,
+          transparent 52%
+        ),
+        radial-gradient(
+          circle at 30% 30%,
+          rgba(80, 120, 160, 0.2) 0%,
+          transparent 42%
+        ),
+        linear-gradient(
+          108deg,
+          #0d1a0b 0%,
+          #131a09 18%,
+          #1c1a08 34%,
+          #2c1e08 46%,
+          #1e1408 58%,
+          #130e14 72%,
+          #0b0b1c 100%
+        );
+    }
+
+    .pr__video-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(6, 8, 6, 0.42) 0%,
+        transparent 20%,
+        transparent 55%,
+        rgba(4, 6, 14, 0.88) 100%
+      );
+    }
+
+    /* Glass Play / Pause Button */
+    .pr__play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.52);
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.28s ease,
+                  background   0.28s ease,
+                  transform    0.28s ease,
+                  opacity      0.35s ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .pr__video:hover .pr__play,
+    .pr__play:hover {
+      border-color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.16);
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+
+    .pr__video.is-playing .pr__play {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pr__video.is-playing:hover .pr__play {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pr__play svg {
+      width: 22px;
+      height: 22px;
+      fill: #FFFFFF;
+    }
+
+    /* Glass Volume Mute / Unmute Button */
+    .pr__vol {
+      position: absolute;
+      right: 22px;
+      bottom: 36px;
+      z-index: 3;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .pr__vol:hover {
+      background: rgba(255, 255, 255, 0.24);
+      border-color: rgba(255, 255, 255, 0.85);
+      transform: scale(1.05);
+    }
+
+    .pr__vol svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Video Bottom Info Overlay */
+    .pr__video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 18px 22px 26px;
+      pointer-events: none;
+    }
+
+    .pr__video-tag {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+    }
+
+    .pr__video-tag span,
+    .pr__video-dur {
+      font-family: var(--pr-sans);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1;
+    }
+
+    /* Interactive Timeline Progress Bar */
+    .pr__bar {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 12px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 2px;
+      z-index: 4;
+      cursor: pointer;
+      transition: height 0.15s ease;
+    }
+
+    .pr__bar:hover {
+      height: 5px;
+    }
+
+    .pr__bar::after {
+      content: '';
+      position: absolute;
+      inset: -10px 0;
+    }
+
+    .pr__bar-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--pr-gold);
+      border-radius: 2px;
+      transition: width 0.15s linear;
+    }
+
+    /* ⑤ Callout */
+    .pr__callout {
+      font-family: var(--pr-sans);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--pr-muted);
+      margin-bottom: 16px;
+    }
+
+    /* ⑥ Luxury Call to Action Buttons */
+    .pr__ctas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 58px;
+    }
+
+    .pr__btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 22px 26px;
+      font-family: var(--pr-sans);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 0;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .pr__btn:hover {
+      opacity: 0.76;
+      transform: translateY(-1px);
+    }
+
+    .pr__btn-icon {
+      font-size: 17px;
+      letter-spacing: 0;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .pr__btn--light {
+      background: var(--pr-btn-cream-bg);
+      color: var(--pr-btn-cream-fg);
+    }
+
+    .pr__btn--dark {
+      background: transparent;
+      color: var(--pr-btn-dark-fg);
+      border: 1px solid var(--pr-btn-dark-bd);
+    }
+
+    /* ⑦ Footer Tagline */
+    .pr__foot {
+      font-family: var(--pr-sans);
+      font-size: 9.5px;
+      font-weight: 300;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(215, 204, 185, 0.2);
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 900px) {
+      .pr {
+        padding: 80px 32px 72px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .pr {
+        padding: 64px 20px 60px;
+      }
+
+      .pr__ctas {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .pr__btn {
+        padding: 19px 20px;
+      }
+
+      .pr__play {
+        width: 64px;
+        height: 64px;
+      }
+
+      .pr__play svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .pr__vol {
+        width: 36px;
+        height: 36px;
+        right: 14px;
+        bottom: 28px;
+      }
+
+      .pr__vol svg {
+        width: 17px;
+        height: 17px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- START: The Residences — Private Residences for Visionaries -->
+  <!-- ======================================================== -->
+  <section class="pr" id="residences" aria-label="Private Residences for Visionaries">
+    <div class="pr__inner">
+      <!-- ① Eyebrow label -->
+      <span class="pr__eyebrow">The Residences</span>
+      <div class="pr__rule pr__rule--sm"></div>
+
+      <!-- ② Main heading -->
+      <h2 class="pr__heading">
+        Private Residences<br>
+        for <em>Visionaries</em>
+      </h2>
+
+      <!-- ③ Project metadata -->
+      <p class="pr__meta">62 Villas &middot; 4 &amp; 5 BHK &middot; Kashmir Kunnu, Calicut</p>
+      <p class="pr__rera">RERA: K-RERA/PRJ/KKD/036/2026</p>
+
+      <!-- ④ Interactive Video Player with Custom Controls -->
+      <div class="pr__video" id="pr-video-container" role="region" aria-label="Villa preview video player">
+        <!-- YouTube Player Mount -->
+        <div class="pr__yt-wrap">
+          <div id="pr-yt-player" class="pr__yt-iframe"></div>
+        </div>
+
+        <!-- Initial Poster / Sunset Glow Cover -->
+        <div class="pr__video-bg" id="pr-video-bg"></div>
+
+        <!-- Glass Play / Pause Button -->
+        <button class="pr__play" id="pr-play-btn" aria-label="Play video" type="button">
+          <!-- Play Icon -->
+          <svg id="pr-icon-play" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 3.8L20.5 12L6 20.2V3.8Z" fill="white" />
+          </svg>
+          <!-- Pause Icon (hidden by default) -->
+          <svg id="pr-icon-pause" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <path d="M7 5H10V19H7V5ZM14 5H17V19H14V5Z" fill="white" />
+          </svg>
+        </button>
+
+        <!-- Glass Volume Mute / Unmute Button -->
+        <button class="pr__vol" id="pr-vol-btn" type="button" aria-label="Unmute video">
+          <!-- Volume Mute Icon (shown when muted) -->
+          <svg id="pr-icon-muted" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" />
+            <path d="M16 9.5l4 5M20 9.5l-4 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <!-- Volume High Icon (shown when unmuted) -->
+          <svg id="pr-icon-unmuted" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" />
+            <path d="M16.5 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <!-- Video Bottom Info Overlay -->
+        <div class="pr__video-info">
+          <div class="pr__video-tag">
+            <span>A Life</span>
+            <span>In a Higher Frame.</span>
+          </div>
+          <span class="pr__video-dur" id="pr-video-dur">00:00 / 02:18</span>
+        </div>
+
+        <!-- Custom Interactive Timeline Progress Bar -->
+        <div class="pr__bar" id="pr-progress-bar" role="slider" aria-label="Video progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="pr__bar-fill" id="pr-bar-fill" style="width: 0%;"></span>
+        </div>
+      </div>
+
+      <!-- ⑤ Callout + Divider Rule -->
+      <p class="pr__callout">Experience Euphoria Firsthand.</p>
+      <div class="pr__rule pr__rule--md"></div>
+
+      <!-- ⑥ CTA Action Buttons -->
+      <div class="pr__ctas">
+        <a href="#contact" class="pr__btn pr__btn--light" id="pr-cta-viewing">
+          Book a Private Viewing
+          <span class="pr__btn-icon">&rarr;</span>
+        </a>
+        <a href="#brochure" class="pr__btn pr__btn--dark" id="pr-cta-brochure">
+          Download Brochure
+          <span class="pr__btn-icon">&darr;</span>
+        </a>
+      </div>
+
+      <!-- ⑦ Footer Tagline -->
+      <p class="pr__foot">Exclusive Homes for a Brighter Tomorrow.</p>
+    </div>
+  </section>
+  <!-- ======================================================== -->
+  <!-- END: The Residences Section -->
+  <!-- ======================================================== -->
+
+  <!-- Standalone Vanilla JavaScript (Zero External Dependencies) -->
+  <script>
+    (function () {
+      const VIDEO_ID = 'r9SacTlPUEY';
+      let player = null;
+      let isPlaying = false;
+      let isMuted = false;
+      let duration = 138; // 2:18 fallback
+      let updateTimer = null;
+      let hasStarted = false;
+
+      const container = document.getElementById('pr-video-container');
+      const posterBg = document.getElementById('pr-video-bg');
+      const playBtn = document.getElementById('pr-play-btn');
+      const volBtn = document.getElementById('pr-vol-btn');
+      const iconPlay = document.getElementById('pr-icon-play');
+      const iconPause = document.getElementById('pr-icon-pause');
+      const iconMuted = document.getElementById('pr-icon-muted');
+      const iconUnmuted = document.getElementById('pr-icon-unmuted');
+      const durText = document.getElementById('pr-video-dur');
+      const bar = document.getElementById('pr-progress-bar');
+      const barFill = document.getElementById('pr-bar-fill');
+
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+      }
+
+      function updateUIState() {
+        if (isPlaying) {
+          container.classList.add('is-playing');
+          iconPlay.style.display = 'none';
+          iconPause.style.display = 'block';
+        } else {
+          container.classList.remove('is-playing');
+          iconPlay.style.display = 'block';
+          iconPause.style.display = 'none';
+        }
+
+        if (isMuted) {
+          iconMuted.style.display = 'block';
+          iconUnmuted.style.display = 'none';
+        } else {
+          iconMuted.style.display = 'none';
+          iconUnmuted.style.display = 'block';
+        }
+      }
+
+      function trackProgress() {
+        if (!player || typeof player.getCurrentTime !== 'function') return;
+        const current = player.getCurrentTime() || 0;
+        const total = player.getDuration() || duration;
+        if (total > 0) {
+          const pct = Math.min(Math.max((current / total) * 100, 0), 100);
+          barFill.style.width = pct + '%';
+          bar.setAttribute('aria-valuenow', Math.round(pct));
+          durText.textContent = formatTime(current) + ' / ' + formatTime(total);
+        }
+      }
+
+      function playVideoWithSound() {
+        if (!player) return;
+        hasStarted = true;
+        posterBg.classList.add('pr__video-bg--hidden');
+
+        try {
+          if (typeof player.unMute === 'function') player.unMute();
+          if (typeof player.setVolume === 'function') player.setVolume(100);
+          isMuted = false;
+          if (typeof player.playVideo === 'function') player.playVideo();
+          isPlaying = true;
+        } catch (e) {
+          // If browser restricts unmuted autoplay, fallback to muted
+          if (typeof player.mute === 'function') player.mute();
+          isMuted = true;
+          if (typeof player.playVideo === 'function') player.playVideo();
+          isPlaying = true;
+        }
+        updateUIState();
+        if (!updateTimer) {
+          updateTimer = setInterval(trackProgress, 250);
+        }
+      }
+
+      function pauseVideo() {
+        if (!player || typeof player.pauseVideo !== 'function') return;
+        player.pauseVideo();
+        isPlaying = false;
+        updateUIState();
+        if (updateTimer) {
+          clearInterval(updateTimer);
+          updateTimer = null;
+        }
+      }
+
+      function togglePlay() {
+        if (!player) return;
+        if (isPlaying) {
+          pauseVideo();
+        } else {
+          playVideoWithSound();
+        }
+      }
+
+      function toggleMute(e) {
+        if (e) e.stopPropagation();
+        if (!player) return;
+        if (isMuted) {
+          if (typeof player.unMute === 'function') player.unMute();
+          if (typeof player.setVolume === 'function') player.setVolume(100);
+          isMuted = false;
+        } else {
+          if (typeof player.mute === 'function') player.mute();
+          isMuted = true;
+        }
+        updateUIState();
+      }
+
+      // Timeline Scrubber Click & Drag
+      function seekFromEvent(e) {
+        if (!player || typeof player.seekTo !== 'function') return;
+        const rect = bar.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clickPos = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+        const total = player.getDuration() || duration;
+        const seekTime = clickPos * total;
+        player.seekTo(seekTime, true);
+        barFill.style.width = (clickPos * 100) + '%';
+        durText.textContent = formatTime(seekTime) + ' / ' + formatTime(total);
+      }
+
+      bar.addEventListener('click', function (e) {
+        e.stopPropagation();
+        seekFromEvent(e);
+      });
+
+      // Event Listeners
+      container.addEventListener('click', function (e) {
+        if (e.target.closest('.pr__bar') || e.target.closest('.pr__vol')) return;
+        togglePlay();
+      });
+
+      playBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        togglePlay();
+      });
+
+      volBtn.addEventListener('click', toggleMute);
+
+      // Pause when clicking CTAs
+      document.querySelectorAll('.pr__btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          pauseVideo();
+        });
+      });
+
+      // Initialize YouTube API
+      window.onYouTubeIframeAPIReady = function () {
+        player = new YT.Player('pr-yt-player', {
+          videoId: VIDEO_ID,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0,
+            iv_load_policy: 3,
+            playsinline: 1,
+            enablejsapi: 1
+          },
+          events: {
+            onReady: function (event) {
+              const d = event.target.getDuration();
+              if (d && d > 0) {
+                duration = d;
+                durText.textContent = '00:00 / ' + formatTime(duration);
+              }
+            },
+            onStateChange: function (event) {
+              if (event.data === 1) { // Playing
+                isPlaying = true;
+                hasStarted = true;
+                posterBg.classList.add('pr__video-bg--hidden');
+                updateUIState();
+                if (!updateTimer) updateTimer = setInterval(trackProgress, 250);
+              } else if (event.data === 2) { // Paused
+                isPlaying = false;
+                updateUIState();
+                if (updateTimer) {
+                  clearInterval(updateTimer);
+                  updateTimer = null;
+                }
+              } else if (event.data === 0) { // Ended
+                isPlaying = false;
+                barFill.style.width = '100%';
+                updateUIState();
+                if (updateTimer) {
+                  clearInterval(updateTimer);
+                  updateTimer = null;
+                }
+              }
+            }
+          }
+        });
+      };
+
+      // Load YouTube Script if not present
+      if (!document.getElementById('yt-iframe-api-script')) {
+        const tag = document.createElement('script');
+        tag.id = 'yt-iframe-api-script';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+      }
+
+      // Auto-play when scrolled into view
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !hasStarted) {
+              if (player && typeof player.playVideo === 'function') {
+                playVideoWithSound();
+              }
+            } else if (!entry.isIntersecting && isPlaying) {
+              pauseVideo();
+            }
+          });
+        }, { threshold: 0.35 });
+
+        observer.observe(container);
+      }
+    })();
+  </script>
+</body>
+</html>

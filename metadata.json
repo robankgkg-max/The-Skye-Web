@@ -1,0 +1,6 @@
+{
+  "name": "The SKYE",
+  "description": "Private hilltop luxury residences at Kashmir Kunnu, Calicut — Rise Above The Rest.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
