@@ -63,6 +63,30 @@ a {
   transition: transform .08s linear, width .25s, height .25s, opacity .25s;
 }
 
+body.has-modal-open,
+body.has-modal-open * {
+  cursor: auto !important;
+}
+
+body.has-modal-open input,
+body.has-modal-open textarea {
+  cursor: text !important;
+}
+
+body.has-modal-open button,
+body.has-modal-open select,
+body.has-modal-open a,
+body.has-modal-open [role="button"] {
+  cursor: pointer !important;
+}
+
+body.has-modal-open #cursor,
+body.has-modal-open #cursor-ring {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 #nav {
   position: fixed;
   top: 0;
@@ -672,31 +696,19 @@ a {
 /* PART 2 — SPLIT LAYOUT */
 .about-split {
   display: grid;
-  grid-template-columns: minmax(320px, 390px) 1fr;
+  grid-template-columns: 0.75fr 1fr;
   width: 100%;
-  max-width: 1560px;
-  margin: 0 auto;
   align-items: start;
-  gap: clamp(24px, 3.5vw, 52px);
-  padding: 0 clamp(20px, 3.5vw, 48px) clamp(48px, 6vh, 80px);
 }
 
 .about-img-col {
-  position: sticky;
-  top: 96px;
-  align-self: start;
-  width: 100%;
-  max-width: 390px;
+  position: relative;
 }
 
 .about-img-sticky {
   position: relative;
-  width: 100%;
-  height: clamp(520px, 72vh, 660px);
-  border-radius: 12px;
+  height: auto;
   overflow: hidden;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14), 0 2px 10px rgba(0, 0, 0, 0.06);
-  background: #000;
 }
 
 .gsap-ready .about-img-sticky {
@@ -708,10 +720,10 @@ a {
   position: relative;
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover;
-  object-position: center 20%;
-  filter: saturate(1.02) brightness(0.98);
+  object-position: top center;
+  filter: none;
   will-change: transform;
 }
 
@@ -720,7 +732,6 @@ a {
   height: 100%;
   min-height: 520px;
   object-fit: cover;
-  object-position: center 20%;
   display: block;
   background: #000;
 }
@@ -850,119 +861,19 @@ a {
   background: #F5F2EC;
   display: flex;
   flex-direction: column;
-  border-radius: 14px;
-  padding: clamp(36px, 5vw, 64px) clamp(28px, 4vw, 56px);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.04);
 }
 
-/* Intent & Brand Crest Strip */
-.about-intent-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: clamp(18px, 2.2vh, 26px);
-  border-bottom: 1px solid rgba(15, 15, 15, 0.12);
-  margin-bottom: clamp(24px, 3vh, 36px);
-  flex-wrap: wrap;
-}
-
-.about-intent-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'DM Sans', -apple-system, sans-serif;
-  font-size: clamp(0.68rem, 0.78vw, 0.8rem);
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #1A1A1A;
-}
-
-.intent-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #B38E5D;
-  display: inline-block;
-}
-
-.about-intent-by {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.about-intent-by .by-text {
-  font-family: 'IM Fell English', Georgia, serif;
-  font-style: italic;
-  font-size: 0.84rem;
-  color: rgba(15, 15, 15, 0.55);
-}
-
-.creator-brand-crest {
-  height: 24px;
-  width: auto;
-  object-fit: contain;
-  filter: brightness(0.12);
-}
-
-/* Pull-quote Block */
-.about-pullquote {
-  position: relative;
-  margin: 0 0 clamp(28px, 3.5vh, 40px) 0;
-  padding: clamp(18px, 2.4vh, 26px) clamp(22px, 2.8vw, 32px);
-  background: rgba(255, 255, 255, 0.65);
-  border-left: 3px solid #B38E5D;
-  border-radius: 0 8px 8px 0;
-}
-
-.pullquote-text {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: clamp(1.18rem, 1.45vw, 1.42rem);
-  line-height: 1.5;
-  color: #0F0F0F;
-  margin: 0;
-}
-
-.pullquote-author {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.pullquote-name {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #0F0F0F;
-}
-
-.pullquote-role {
-  font-family: 'IM Fell English', Georgia, serif;
-  font-style: italic;
-  font-size: 0.78rem;
-  color: rgba(15, 15, 15, 0.6);
-}
-
-/* Upper Module: Founder Profile + Intro Prose */
 .about-upper {
   display: grid;
-  grid-template-columns: 0.68fr 1fr;
+  grid-template-columns: 0.78fr 1fr;
   align-items: start;
-  padding: 0;
-  gap: clamp(20px, 2.8vw, 36px);
+  padding: clamp(52px, 7vh, 96px) clamp(36px, 4.5vw, 68px) 0;
+  gap: clamp(20px, 2.5vw, 36px);
 }
 
 .about-portrait {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 }
 
 .gsap-ready .about-portrait {
@@ -971,13 +882,12 @@ a {
 
 .about-portrait img {
   width: 100%;
-  aspect-ratio: 3/4;
+  aspect-ratio: 2/3;
   object-fit: cover;
   object-position: top center;
-  filter: saturate(1.02) contrast(1.02);
-  transform: scale(1.04);
+  filter: none;
+  transform: scale(1.06);
   transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  display: block;
 }
 
 .about-portrait.revealed img {
@@ -986,7 +896,7 @@ a {
 
 .about-p1 {
   font-family: 'IM Fell English', Georgia, serif;
-  font-size: clamp(0.86rem, 1.02vw, 1.08rem);
+  font-size: clamp(0.84rem, 1.02vw, 1.08rem);
   line-height: 1.76;
   color: #0F0F0F;
   letter-spacing: 0.004em;
@@ -1000,62 +910,18 @@ a {
 
 .about-divider {
   height: 1px;
-  background: rgba(15,15,15,0.18);
-  margin: clamp(28px, 3.5vh, 44px) 0;
+  background: rgba(15,15,15,0.20);
+  margin: clamp(32px, 4vh, 56px) clamp(36px, 4.5vw, 68px);
   transform-origin: left;
   transform: scaleX(0);
 }
 
-/* Curated Full-Color Architectural Photos */
-.about-photos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(14px, 1.8vw, 24px);
-  margin-bottom: clamp(28px, 3.5vh, 44px);
-}
-
-.about-photos .photo-wrap {
-  overflow: hidden;
-  position: relative;
-  border-radius: 8px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
-}
-
-.gsap-ready .about-photos .photo-wrap {
-  clip-path: inset(0 0 100% 0);
-}
-
-.about-photos .photo-wrap img {
-  width: 100%;
-  aspect-ratio: 16/10;
-  object-fit: cover;
-  filter: saturate(1.02) contrast(1.02);
-  transform: scale(1.04);
-  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-  display: block;
-}
-
-.about-photos .photo-wrap.revealed img {
-  transform: scale(1);
-}
-
-.about-photos .photo-wrap:hover img {
-  transform: scale(1.08);
-}
-
-.about-photos .photo-wrap:first-child img {
-  object-position: center center;
-}
-
-.about-photos .photo-wrap:last-child img {
-  object-position: center center;
-}
-
-/* Lower Module: Narrative + Signature */
 .about-lower {
-  display: block;
-  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 0.78fr;
+  align-items: start;
+  padding: 0 clamp(36px, 4.5vw, 68px) clamp(64px, 8vh, 112px);
+  gap: clamp(20px, 2.5vw, 36px);
 }
 
 .about-founder-col {
@@ -1065,7 +931,7 @@ a {
 
 .about-p2 {
   font-family: 'IM Fell English', Georgia, serif;
-  font-size: clamp(0.86rem, 1.02vw, 1.08rem);
+  font-size: clamp(0.84rem, 1.02vw, 1.08rem);
   line-height: 1.76;
   color: #0F0F0F;
   letter-spacing: 0.004em;
@@ -1078,7 +944,7 @@ a {
 }
 
 .founder-block {
-  margin-top: clamp(24px, 3vh, 40px);
+  margin-top: clamp(30px, 4vh, 50px);
   display: flex;
   align-items: flex-start;
   gap: 18px;
@@ -1128,7 +994,134 @@ a {
   display: block;
 }
 
-@media (max-width: 960px) {
+.about-photos {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vh, 16px);
+}
+
+.about-photos .photo-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
+.gsap-ready .about-photos .photo-wrap {
+  clip-path: inset(0 0 100% 0);
+}
+
+.about-photos .photo-wrap img {
+  width: 100%;
+  object-fit: cover;
+  filter: none;
+  transform: scale(1.08);
+  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.about-photos .photo-wrap.revealed img {
+  transform: scale(1);
+}
+
+.about-photos .photo-wrap:first-child img {
+  aspect-ratio: 4/3;
+  object-position: center top;
+}
+
+.about-photos .photo-wrap:last-child img {
+  aspect-ratio: 4/3;
+  object-position: center;
+}
+
+.about-tablet-media-video,
+.about-photos .about-tablet-only-video {
+  display: none;
+}
+
+/* DESKTOP-ONLY ENHANCEMENTS FOR SECTION 2 (THE VISION) */
+@media (min-width: 861px) {
+  .about-split {
+    grid-template-columns: 0.46fr 1fr;
+    width: 100%;
+    align-items: start;
+  }
+
+  .about-img-col {
+    position: relative;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .about-img-sticky {
+    position: sticky;
+    top: clamp(24px, 4vh, 48px);
+    width: 100%;
+    max-height: min(78vh, 680px);
+    overflow: hidden;
+  }
+
+  .about-founder-video {
+    width: 100%;
+    height: 100%;
+    max-height: min(78vh, 680px);
+    min-height: 440px;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .about-upper {
+    grid-template-columns: 0.6fr 1fr;
+    gap: clamp(24px, 2.8vw, 40px);
+  }
+
+  .about-portrait {
+    max-width: 300px;
+    width: 100%;
+  }
+
+  .about-portrait img {
+    aspect-ratio: 2/3;
+    max-height: 480px;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  /* Desktop single interior photo replacing stacked two images with identical combined height */
+  .about-photos {
+    gap: 0;
+  }
+
+  .about-photos #photo1,
+  .about-photos .photo-wrap:first-child {
+    display: none !important;
+  }
+
+  .about-photos #photo2,
+  .about-photos .photo-wrap:last-child {
+    width: 100%;
+    aspect-ratio: auto;
+    max-height: none;
+    flex: none;
+  }
+
+  .about-photos #photo2 img,
+  .about-photos .photo-wrap:last-child img {
+    aspect-ratio: 2 / 3.06;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: cover;
+    object-position: center 25%;
+    display: block !important;
+  }
+
+  .about-photos .about-tablet-only-video,
+  .about-tablet-media-video {
+    display: none !important;
+  }
+}
+
+@media (max-width: 860px) {
   .hed-main {
     font-size: clamp(4rem, 17vw, 7.5rem);
   }
@@ -1139,28 +1132,74 @@ a {
 
   .about-split {
     grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .about-img-col {
-    position: relative;
-    top: 0;
-    max-width: 440px;
-    margin: 0 auto;
   }
 
   .about-img-sticky {
-    height: clamp(380px, 78vw, 560px);
-    max-width: 440px;
+    position: relative;
+    height: clamp(320px, 76vw, 560px);
   }
 
   .about-upper {
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 20px;
+    grid-template-columns: 0.85fr 1.1fr;
+    padding: clamp(36px, 6vw, 56px) clamp(22px, 5vw, 36px) 0;
+    gap: clamp(14px, 3vw, 24px);
+  }
+
+  .about-portrait img {
+    aspect-ratio: 2/3;
+  }
+
+  .about-divider {
+    margin: clamp(24px, 4vw, 40px) clamp(22px, 5vw, 36px);
+  }
+
+  .about-lower {
+    grid-template-columns: 1fr;
+    padding: 0 clamp(22px, 5vw, 36px) clamp(48px, 8vw, 72px);
+    gap: clamp(28px, 5vw, 44px);
   }
 
   .about-photos {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: clamp(8px, 2vw, 16px);
+    width: 100%;
+  }
+
+  .about-photos #photo1,
+  .about-photos #photo2,
+  .about-photos .photo-wrap {
+    flex: 1 1 0%;
+    width: 0;
+    min-width: 0;
+    aspect-ratio: 3 / 4 !important;
+    max-height: clamp(340px, 48vw, 460px);
+    overflow: hidden;
+    position: relative;
+    display: block !important;
+    border-radius: 2px;
+  }
+
+  .about-photos .photo-wrap img,
+  .about-photos .photo-wrap video,
+  .about-photos #photo1 video,
+  .about-photos #photo2 img {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin: 0;
+  }
+
+  .about-photos #photo1 video {
+    object-position: center 15% !important;
+    cursor: pointer;
+  }
+
+  .about-photos #photo2 img {
+    object-position: top center !important;
   }
 
   .about-p1, .about-p2 {
@@ -1169,7 +1208,7 @@ a {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 500px) {
   .hed-main {
     font-size: clamp(3.4rem, 19vw, 5.8rem);
   }
@@ -1179,19 +1218,14 @@ a {
   .about-upper {
     grid-template-columns: 1fr;
   }
-  .about-photos {
-    grid-template-columns: 1fr;
-  }
-  .about-intent-strip {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  .about-portrait {
+    display: none;
   }
 }
 
 @media (max-width: 599px) {
   .about-photos {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -4321,6 +4355,9 @@ a {
   text-transform: uppercase;
   text-decoration: none;
   border-radius: 0;
+  border: none;
+  cursor: pointer;
+  background: transparent;
   transition: opacity 0.22s ease;
 }
 
@@ -4642,6 +4679,44 @@ a {
   .ts-footer__bottom {
     font-size: 11px;
   }
+}
+
+/* Private Viewing Modal Animations */
+@keyframes pvFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pvScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: pvFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scaleUp {
+  animation: pvScaleUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pv-input-field {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pv-input-field:focus {
+  border-color: rgba(201, 170, 113, 0.6) !important;
+  outline: none !important;
+}
+
+.pv-input-field::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
 }
 
 

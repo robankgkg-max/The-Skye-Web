@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from 'react';
+import PrivateViewingModal from './PrivateViewingModal';
 
 // Declaration for window.YT
 declare global {
@@ -44,6 +45,7 @@ export default function PrivateResidencesSection() {
   const [duration, setDuration] = useState<number>(96); // 1:36 default or dynamic
   const [progress, setProgress] = useState<number>(0);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Format seconds into MM:SS
   const formatTime = (seconds: number) => {
@@ -330,6 +332,24 @@ export default function PrivateResidencesSection() {
     pauseVideo();
   };
 
+  const handleBookViewingClick = (e: ReactMouseEvent) => {
+    e.preventDefault();
+    pauseVideo();
+    setIsModalOpen(true);
+  };
+
+  // Allow other components or nav items to open the viewing modal
+  useEffect(() => {
+    const handleOpenModal = () => {
+      pauseVideo();
+      setIsModalOpen(true);
+    };
+    window.addEventListener('open-private-viewing', handleOpenModal);
+    return () => {
+      window.removeEventListener('open-private-viewing', handleOpenModal);
+    };
+  }, [pauseVideo]);
+
   return (
     <section
       className="pr"
@@ -454,14 +474,15 @@ export default function PrivateResidencesSection() {
 
         {/* ⑥ CTA buttons - Pause video on click */}
         <div className="pr__ctas">
-          <a
-            href="#footer"
+          <button
+            type="button"
             className="pr__btn pr__btn--light"
-            onClick={handleCtaClick}
+            onClick={handleBookViewingClick}
+            aria-haspopup="dialog"
           >
             Book a Private Viewing
             <span className="pr__btn-icon">→</span>
-          </a>
+          </button>
           <a
             href="#footer"
             className="pr__btn pr__btn--dark"
@@ -475,6 +496,12 @@ export default function PrivateResidencesSection() {
         {/* ⑦ Footer tagline */}
         <p className="pr__foot">Exclusive Homes for a Brighter Tomorrow.</p>
       </div>
+
+      {/* Private Viewing Form Modal */}
+      <PrivateViewingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   );
 }
