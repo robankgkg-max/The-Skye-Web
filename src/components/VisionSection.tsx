@@ -332,16 +332,18 @@ export default function VisionSection() {
         },
       });
 
-      gsap.to('#aboutImgParallax', {
-        yPercent: 10,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.about-split',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.4,
-        },
-      });
+      if (window.innerWidth < 861) {
+        gsap.to('#aboutImgParallax', {
+          yPercent: 10,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.about-split',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.4,
+          },
+        });
+      }
 
       gsap.to('#aboutPortrait', {
         clipPath: 'inset(0 0 0% 0)',

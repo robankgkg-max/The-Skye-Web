@@ -1056,17 +1056,31 @@ body.has-modal-open #cursor-ring {
     position: sticky;
     top: clamp(24px, 4vh, 48px);
     width: 100%;
-    max-height: min(78vh, 680px);
+    max-width: calc(min(86vh, 748px) * 9 / 16);
+    height: min(86vh, 748px);
+    max-height: min(86vh, 748px);
+    aspect-ratio: 9 / 16;
     overflow: hidden;
+    background: #000;
   }
 
   .about-founder-video {
     width: 100%;
     height: 100%;
-    max-height: min(78vh, 680px);
-    min-height: 440px;
-    object-fit: cover;
-    object-position: center top;
+    max-height: min(86vh, 748px);
+    aspect-ratio: 9 / 16;
+    object-fit: contain;
+    object-position: center;
+    background: #000;
+  }
+
+  .about-vid-cover-img {
+    object-fit: contain;
+    object-position: center;
+  }
+
+  #aboutImgParallax {
+    transform: none !important;
   }
 
   .about-upper {
