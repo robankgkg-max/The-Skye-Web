@@ -1040,7 +1040,7 @@ body.has-modal-open #cursor-ring {
 /* DESKTOP-ONLY ENHANCEMENTS FOR SECTION 2 (THE VISION) */
 @media (min-width: 861px) {
   .about-split {
-    grid-template-columns: 0.46fr 1fr;
+    grid-template-columns: auto 1fr;
     width: 100%;
     align-items: start;
   }
@@ -1050,6 +1050,8 @@ body.has-modal-open #cursor-ring {
     height: 100%;
     display: flex;
     justify-content: flex-start;
+    padding-left: clamp(36px, 5vw, 84px);
+    padding-right: clamp(20px, 3vw, 48px);
   }
 
   .about-img-sticky {
@@ -1084,13 +1086,16 @@ body.has-modal-open #cursor-ring {
   }
 
   .about-upper {
-    grid-template-columns: 0.6fr 1fr;
-    gap: clamp(24px, 2.8vw, 40px);
+    grid-template-columns: auto 1fr;
+    gap: clamp(24px, 2.5vw, 38px);
+    align-items: start;
   }
 
   .about-portrait {
-    max-width: 300px;
-    width: 100%;
+    max-width: 290px;
+    width: clamp(220px, 18vw, 290px);
+    margin-left: clamp(28px, 4vw, 64px);
+    flex-shrink: 0;
   }
 
   .about-portrait img {
